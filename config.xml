@@ -36,6 +36,7 @@
 	<preference name="android-targetSdkVersion" value="19" /> <!-- testado no Android 4.4 -->
 	<preference name="DisallowOverscroll" value="true"/>
 
+  <icon src="img/soul.png" />
+  
 	<access origin="*" />
-  <icon src="soul.png" />
  </widget>
