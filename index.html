@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Hor&aacute;rios Soul</title>
+    <meta name="description" content="Hor&aacute;rios Soul">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="SHORTCUT ICON" href="favicon.ico" />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar-inner" id="topo_fixo">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="brand"><img src="topo_soul.jpg" /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <form onsubmit="return false;">
+        <div id="conteudo_form">
+        
+          <div class="navbar navbar-default barra_titulo">
+            <div class="navbar-inner">
+              <div class="container">
+                <div class="navbar-header pull-right">
+                  <a class="brand"><img src="barra_titulo_soul.jpg" /></a>
+                  <label class="titulo">
+                    <img src="relogio.png" />
+                    Hor&aacute;rios SOUL
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group control-group">
+            <label for="selectSentido">Sentido</label>
+            <select id="selectSentido" class="form-control" style="display: block;">
+              <option value="ALV-POA">ALVORADA > PORTO ALEGRE</option>
+              <option value="POA-ALV">PORTO ALEGRE > ALVORADA</option>
+              <option value="ALV./GRAVATAI">ALVORADA > GRAVATAI</option>
+              <option value="GRAVATAI/ALV.">GRAVATAI > ALVORADA</option>
+              <option value="ALVORADA/VIAMAO">ALVORADA > VIAMAO</option>
+              <option value="VIAMAO/ALVORADA">VIAMAO > ALVORADA</option>
+              <option value="ALV./GUAIBA">ALVORADA > GUAIBA</option>
+              <option value="GUAIBA/ALV.">GUAIBA > ALVORADA</option>
+              <option value="ALV./DIST.IND.CACHOEIRINHA">ALV. > DIST.IND.CACHOEIRINHA</option>
+              <option value="DIST.IND.CACHOEIRINHA/ALV.">DIST.IND.CACHOEIRINHA > ALV.</option>
+            </select>
+          </div>
+          <div class="form-group control-group">
+            <label for="selectLinhas">Linhas</label>
+            <select id="selectLinhas" class="form-control" style="display: block;"></select>
+          </div>
+          <div class="form-group">
+            <label for="selectDia">Dia</label>
+            <select id="selectDia" class="form-control">
+              <option value="DIA &Uacute;TIL">DIA &Uacute;TIL</option>
+              <option value="SABADO">S&Aacute;BADO</option>
+              <option value="DOMINGO">DOMINGO E FERIADOS</option>
+            </select>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="txtHoraInicial">Hora inicial</label>
+              <input type="time" class="form-control" id="txtHoraInicial" placeholder="Hora inicial">
+            </div>
+            <div class="col-xs-6">
+              <label for="txtHoraFinal">Hora final</label>
+              <input type="time" class="form-control" id="txtHoraFinal" placeholder="Hora final">
+            </div>
+          </div>
+          <div class="form-group" style="display: none;">
+            <label for="txtPesquisar">Pesquisar por texto</label>
+            <input type="text" class="form-control" id="txtPesquisar" placeholder="Pesquisar por texto">
+          </div>
+          <div class="form-group">
+            <button style="width: 120px;" id="btnPesquisar" class="form-control btn btn-soul">Pesquisar</button>
+          </div>
+        </div>
+        <div id="conteudo_tabela" style="">
+          <div class="form-group navbar navbar-fixed-top container" style="top: 70px;display: none; ">
+            <button id="btnVoltar" class="btn btn-primary">
+              <span class="glyphicon glyphicon-chevron-left glyphicon-large"></span>
+              Voltar
+            </button>
+          </div>
+        </div>
+      </form>
+        
+    </div> <!-- /container -->        
+    <script src="js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/dados-2014-05-15.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
