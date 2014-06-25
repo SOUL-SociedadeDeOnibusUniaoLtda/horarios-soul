@@ -5,7 +5,7 @@
 		id              = "br.com.soul.horarios"
 		version         = "1.0.0">
 
-	<name>Horarios Soul</name>
+	<name>Horários Soul</name>
 
 	<description>
 		Aplicativo para consulta da tabela de horários de ônibus da empresa Soul.
