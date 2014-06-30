@@ -93,6 +93,10 @@ function formatTime(time) {
 	return horas + ":" + minutos;
 }
 
+function formatData(data) {
+  return data.split('-').reverse().join('/');
+}
+
 function getAndroidVersion() {
   var ua = navigator.userAgent; 
   var match = ua.match(/Android\s([0-9\.]*)/);
@@ -104,6 +108,40 @@ $(window).resize(function(){
     $('.navbar-default .navbar-inner').width($('body').width());
   }
 });
+
+function carregaAreaNoticias() {
+
+  var novasNoticias = $(tabelaNoticias).filter(function(){ return this.lida == false });
+  if (novasNoticias.length > 0) {
+    $('#span_noticias_count').text(novasNoticias.length + ' ' + (novasNoticias.length == 1 ? 'nova' : 'novas'));
+    $('#span_noticias_novas').show();
+  } else {
+    $('#span_noticias_novas').hide();
+  }
+  
+  var listaNoticias = $('#area_noticias');
+  listaNoticias.find('.noticia_carregada').remove();
+  var template = listaNoticias.find('li:first');
+  
+  $(tabelaNoticias).each(function(i, noticia){
+    var noticiaArea = template.clone();
+    
+    noticiaArea.find('h4').text(formatData(noticia.data));
+    noticiaArea.find('#noticia_titulo').text(noticia.titulo);
+    noticiaArea.find('#noticia_texto').text(noticia.texto);
+    if (noticia.lida == false) {
+      noticiaArea.addClass('texto_negrito');
+      noticiaArea.find('h4').append('<span> (Não lida)</span>');
+    }
+    noticiaArea.click(function() {
+      noticia.lida = true;
+      $(this).find('.glyphicon').toggleClass('glyphicon-chevron-down glyphicon-chevron-right')
+      $(this).find('#btnNoticiasLerMais,#btnNoticiasLerMenos').toggle();
+      $(this).removeClass('texto_negrito').find('#noticia_texto').slideToggle('fast');
+    });
+    noticiaArea.addClass('noticia_carregada').appendTo(listaNoticias).show();
+  });
+}
 
 $(function () {
 
@@ -119,6 +157,21 @@ $(function () {
   $('#topo_fixo').click(function(){
     $('body').animate({scrollTop: 0}, 'slow');
   });
+  
+  
+  $('#btnNoticias').click(function(){
+    $('.area_conteudo').hide();
+    $('#conteudo_noticias').show();
+  });
+  
+  $('#btnVoltarNoticias').click(function(){
+    $('.area_conteudo').hide();
+    $('#conteudo_form,#conteudo_tabela').show();
+    // recarrega lidas/nao lidas
+    carregaAreaNoticias();
+  });
+  
+  carregaAreaNoticias();
   
   var horaini = new Date();
   horaini.setHours(horaini.getHours()-1);

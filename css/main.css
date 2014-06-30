@@ -3,8 +3,8 @@ body {
   color: #323A8B;
 }
 
-#btnPesquisar{
-  /*background-color: #323A8B;*/
+.texto_negrito {
+  font-weight: bold;
 }
 
 .barra_titulo {

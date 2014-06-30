@@ -28,20 +28,29 @@
     <div class="container">
 
       <form onsubmit="return false;">
-        <div id="conteudo_form">
-        
-          <div class="navbar navbar-default barra_titulo">
-            <div class="navbar-inner">
-              <div class="container">
-                <div class="navbar-header pull-right">
-                  <a class="brand"><img src="img/barra_titulo_soul.jpg" /></a>
-                  <label class="titulo">
-                    <img src="img/relogio.png" />
-                    Hor&aacute;rios SOUL
-                  </label>
-                </div>
+        <div class="navbar navbar-default barra_titulo">
+          <div class="navbar-inner">
+            <div class="container">
+              <div class="navbar-header pull-right">
+                <a class="brand"><img src="img/barra_titulo_soul.jpg" /></a>
+                <label class="titulo">
+                  <img src="img/relogio.png" />
+                  Hor&aacute;rios SOUL
+                </label>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="area_conteudo" id="conteudo_form">
+        
+          
+          <div class="form-group control-group">
+            <button id="btnNoticias" class="btn btn-soul">
+              Notícias 
+              <span id="span_noticias_novas" style="display: none;">
+                ( <span id="span_noticias_count"></span> )
+              </span>
+            </button>
           </div>
           
           <div class="form-group control-group">
@@ -89,12 +98,44 @@
             <button style="width: 120px;" id="btnPesquisar" class="form-control btn btn-soul">Pesquisar</button>
           </div>
         </div>
-        <div id="conteudo_tabela" style="">
+        <div class="area_conteudo" id="conteudo_tabela" style="">
           <div class="form-group navbar navbar-fixed-top container" style="top: 70px;display: none; ">
             <button id="btnVoltar" class="btn btn-primary">
               <span class="glyphicon glyphicon-chevron-left glyphicon-large"></span>
               Voltar
             </button>
+          </div>
+        </div>
+        <div class="area_conteudo" id="conteudo_noticias" style="display: none;">
+          <div class="form-group control-group">
+            <h3>
+              <button id="btnVoltarNoticias" class="btn btn-soul">
+                <span class="glyphicon glyphicon-chevron-left glyphicon-large"></span>
+                Voltar
+              </button>
+              <span class="label label-default">
+                Notícias
+              </span>
+            </h3>
+            <ul class="media-list" id="area_noticias">
+              <li class="media" id="template_noticias" style="display: none;">
+                <a class="pull-left" href="">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+                
+                <div class="media-body">
+                  <h4 class="media-heading"></h4>
+                  <p id="noticia_titulo"></p>
+                  <p id="noticia_texto" style="display: none;"></p>
+                  <button id="btnNoticiasLerMais" class="btn btn-soul">
+                    Ler mais
+                  </button>
+                  <button id="btnNoticiasLerMenos" class="btn btn-soul" style="display: none;">
+                    Diminuir
+                  </button>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </form>
