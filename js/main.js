@@ -128,7 +128,7 @@ function carregaAreaNoticias() {
     
     noticiaArea.find('h4').text(formatData(noticia.data));
     noticiaArea.find('#noticia_titulo').text(noticia.titulo);
-    noticiaArea.find('#noticia_texto').text(noticia.texto);
+    noticiaArea.find('#noticia_texto').html(noticia.texto.split("\n").join("<br />"));
     if (noticia.lida == false) {
       noticiaArea.addClass('texto_negrito');
       noticiaArea.find('h4').append('<span> (Não lida)</span>');
