@@ -1,5 +1,9 @@
 //autor: jeanroldao@gmail.com
 
+function syncronizaNoticias() {
+  localStorage.setItem('tabelaNoticias', JSON.stringify(tabelaNoticias));
+}
+
 var linhasAgrupadas = null;
 function getLinhas() {
   //tabelaHorarios
@@ -129,17 +133,39 @@ function carregaAreaNoticias() {
     noticiaArea.find('h4').text(formatData(noticia.data));
     noticiaArea.find('#noticia_titulo').text(noticia.titulo);
     noticiaArea.find('#noticia_texto').html(noticia.texto.split("\n").join("<br />"));
+    
     if (noticia.lida == false) {
-      noticiaArea.addClass('texto_negrito');
-      noticiaArea.find('h4').append('<span> (Não lida)</span>');
+      noticiaArea
+        .addClass('texto_negrito')
+        .find('h4')
+          .append('<span class="nao_lida_label"> (Não lida)</span>')
+        .end();
     }
+    
     noticiaArea.click(function() {
       noticia.lida = true;
-      $(this).find('.glyphicon').toggleClass('glyphicon-chevron-down glyphicon-chevron-right')
-      $(this).find('#btnNoticiasLerMais,#btnNoticiasLerMenos').toggle();
-      $(this).removeClass('texto_negrito').find('#noticia_texto').slideToggle('fast');
+      syncronizaNoticias();
+      
+      $(this)
+        .find('.glyphicon')
+          .toggleClass('glyphicon-chevron-down glyphicon-chevron-right')
+        .end()
+        .find('.nao_lida_label')
+          .remove()
+        .end()
+        .find('#btnNoticiasLerMais,#btnNoticiasLerMenos')
+          .toggle()
+        .end()
+        .removeClass('texto_negrito')
+        .find('#noticia_texto')
+          .slideToggle('fast')
+        .end();
     });
-    noticiaArea.addClass('noticia_carregada').appendTo(listaNoticias).show();
+    
+    noticiaArea
+      .addClass('noticia_carregada')
+      .appendTo(listaNoticias)
+      .show();
   });
 }
 
