@@ -36,7 +36,7 @@
 	<preference name="android-targetSdkVersion" value="19" /> <!-- testado no Android 4.4 -->
 	<preference name="DisallowOverscroll" value="true"/>
 
-  <icon src="img/soul_rounded_semborda.png" />
+  <icon src="img/soul_rounded.png" />
   
 	<access origin="*" />
  </widget>
