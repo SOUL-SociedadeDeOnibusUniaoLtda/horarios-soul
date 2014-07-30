@@ -3,12 +3,12 @@
 		xmlns:gap       = "http://phonegap.com/ns/1.0"
 		xmlns:android   = "http://schemas.android.com/apk/res/android"
 		id              = "br.com.soul.horarios"
-		version         = "1.0.7">
+		version         = "1.0.8">
 
 	<name>Horários Soul</name>
 
 	<description>
-		Aplicativo para consulta da tabela de horários de ônibus da empresa Soul.
+		Aplicativo para consulta da tabela de horários de ônibus da empresa SOUL - Sociedade de Ônibus União Ltda..
 	</description>
 
 	<author href="http://www.soul.com.br/" email="horariossoul@gmail.com">
