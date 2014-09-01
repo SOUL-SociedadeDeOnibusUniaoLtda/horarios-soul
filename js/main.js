@@ -169,6 +169,12 @@ function carregaAreaNoticias() {
   });
 }
 
+function capitalize(str) {
+  return $(str.split(' ')).map(function(i, v){
+    return v.charAt(0).toUpperCase() + v.substring(1).toLowerCase();
+  }).toArray().join(' ');
+}
+
 $(function () {
 
   var txtPesquisar = $('#txtPesquisar');
@@ -227,7 +233,7 @@ $(function () {
     $(linhas).each(function(i, linha){
       var optionLinha = document.createElement('option');
       optionLinha.value = linha;
-      optionLinha.text = linha;
+      optionLinha.text = capitalize(linha);
     
       selectLinhas.append(optionLinha);
     });
