@@ -420,7 +420,7 @@ function montaGrid(lista) {
     criaLinha(table, ['Hora', 'Linha', 'Descri&ccedil;&atilde;o'], 'thead');
     for (var i = 0; i < total_linhas; i++) {
       var linha = lista[i];
-      criaLinha(table, [linha.hora, linha.linha, linha.descricao]);
+      criaLinha(table, [linha.hora, capitalize(linha.linha), linha.descricao]);
     }
   }
 }
