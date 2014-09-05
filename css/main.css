@@ -3,6 +3,10 @@ body {
   color: #323A8B;
 }
 
+.clsLabelLembrar {
+  display: none;
+}
+
 .texto_negrito {
   font-weight: bold;
 }

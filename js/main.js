@@ -68,33 +68,26 @@ function busca(filtro) {
       listaFiltrada.push(tabelaHorarios[i]);
     }
   }
-  listaFiltrada.sort(function(a,b){
-    //return a.hora < b.hora;
-    if (a.hora < b.hora) {
-      return -1;
-    } else if (a.hora > b.hora) {
-      return 1;
-    } else if(a.descricao < b.descricao) {
-      return -1;
-    } else if (a.descricao > b.descricao) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
   return listaFiltrada;
 }
 
 function formatTime(time) {
-	var horas = time.getHours();
-	if (horas < 10) {
-		horas = "0" + horas;
-	}
-	var minutos = time.getMinutes();
-	if (minutos < 10) {
-		minutos = "0" + minutos;
-	}
-	return horas + ":" + minutos;
+  var horas, minutos;
+  if (time.getHours) {
+    horas = time.getHours();
+    minutos = time.getMinutes();
+  } else {
+    time = time.split(':');
+    horas = time[0];
+    minutos = time.length > 0 ? time[1] : '0';
+  }
+  if (horas < 10) {
+    horas = "0" + (+horas);
+  }
+  if (minutos < 10) {
+    minutos = "0" + (+minutos);
+  }
+  return horas + ":" + minutos;
 }
 
 function formatData(data) {
@@ -186,6 +179,37 @@ $(function () {
   var btnPesquisar = $('#btnPesquisar');
   var btnVoltar = $('#btnVoltar');
   
+  // Teste se timepicker é suportado, 
+  // se nao for usa campos alterativos para selecionar horas e minutos
+  txtHoraInicial.val(txtHoraInicial.attr('placeholder'));
+  if (txtHoraInicial.val()) {
+    $([txtHoraInicial, txtHoraFinal]).each(function(i, v) {
+      v.val('');
+      v.attr('type', 'number');
+      v.attr('maxlength', '2');
+      v.width(v.width() / 3);
+      
+      v.parent().append($('<div>').append(v.css('display', 'inline')).append(':'));
+      var v1 = $(v[0]).attr('placeholder', 'Hora');
+      var v2 = v.clone().attr('placeholder', 'Minuto').appendTo(v.parent());
+      
+      v.val=function(value) {
+        if (arguments.length == 0) {
+          return formatTime(v1.val() + ':' + v2.val());
+        } else {
+          var horaMin = ['', ''];
+          if (value) {
+            horaMin = formatTime(value).split(':');
+          }
+          v1.val(horaMin[0]);
+          v2.val(horaMin[1]);
+          return this;
+        }
+      };
+    });
+    
+  }
+  
   $('#topo_fixo').click(function(){
     $('body').animate({scrollTop: 0}, 'slow');
   });
@@ -205,6 +229,10 @@ $(function () {
   
   carregaAreaNoticias();
   
+  $('#checkLembrarFiltros').click(function() {
+    $('.clsLabelLembrar').toggle();
+  });
+ 
   var horaini = new Date();
   horaini.setHours(horaini.getHours()-1);
   txtHoraInicial.val(formatTime(horaini));
@@ -268,15 +296,18 @@ $(function () {
         
         var resultado = [];
         var sentido = selectSentido.val();
-        if (txtHoraInicial.val() < txtHoraFinal.val()) {
+        var horaInicial = formatTime(txtHoraInicial.val());
+        var horaFinal = formatTime(txtHoraFinal.val());
+        
+        if (horaInicial < horaFinal) {
           resultado = busca(function(item){
           
             return (item.descricao.toLowerCase().indexOf(txtPesquisar.val().toLowerCase()) != -1)
               && (selecao.length == 0 || selecao.indexOf(item.linha) != -1)
               && item.dia == selectDia.val()
               && item.sentido == sentido
-              && item.hora >= txtHoraInicial.val()
-              && item.hora <= txtHoraFinal.val();
+              && item.hora >= horaInicial
+              && item.hora <= horaFinal;
           });
         } else {
           resultado = busca(function(item){
@@ -285,7 +316,7 @@ $(function () {
               && (selecao.length == 0 || selecao.indexOf(item.linha) != -1)
               && item.dia == selectDia.val()
               && item.sentido == sentido
-              && item.hora >= txtHoraInicial.val();
+              && item.hora >= horaInicial;
           });
           
           resultado = resultado.concat(busca(function(item){
@@ -294,7 +325,7 @@ $(function () {
               && (selecao.length == 0 || selecao.indexOf(item.linha) != -1)
               && item.dia == selectDia.val()
               && item.sentido == sentido
-              && item.hora <= txtHoraFinal.val();
+              && item.hora <= horaFinal;
           }));
         }
         
