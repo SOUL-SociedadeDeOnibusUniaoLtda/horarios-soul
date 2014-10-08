@@ -26,14 +26,10 @@
 
   <feature name="http://api.phonegap.com/1.0/device"/>
 	
-	<!-- notificações desativadas
-	<gap:plugin name="de.appplant.cordova.plugin.local-notification" />
-  -->
-	
 	<preference name="permissions" value="none"/>
-	<preference name="phonegap-version" value="3.6.3" />
+	<preference name="phonegap-version" value="3.5.0" />
 	<preference name="android-installLocation" value="auto" />
-	<preference name="android-targetSdkVersion" value="19" /> <!-- testado no Android 4.4 -->
+	<preference name="android-targetSdkVersion" value="16" /> <!-- testado no Android 4.4 -->
 	<preference name="DisallowOverscroll" value="true"/>
 
   <icon src="img/soul_rounded_semborda_comlogo.png" />
