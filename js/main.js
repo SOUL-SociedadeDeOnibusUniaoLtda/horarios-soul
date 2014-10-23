@@ -1,4 +1,22 @@
 //autor: jeanroldao@gmail.com
+var SERVER_URL = 'http://www.soul.com.br/horarios/json/?callback=?';
+
+function checkUpdatesFromSoul() {
+  $.getJSON(SERVER_URL, {
+    noticias_hash: localStorage.getItem('noticias_hash'), 
+    horarios_hash: localStorage.getItem('horarios_hash')
+  }, function(response){
+    if (response.noticias_hash) {
+      //localStorage.setItem('noticias_hash', response.noticias_hash);
+      var noticias = response.noticias;
+      var length = noticias.length;
+      
+      for (var i = 0; i < length; i++) {
+        console.log(noticias[i]);
+      }
+    }
+  });
+}
 
 function syncronizaNoticias() {
   localStorage.setItem('tabelaNoticias', JSON.stringify(tabelaNoticias));
