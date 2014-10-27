@@ -1,19 +1,38 @@
 //autor: jeanroldao@gmail.com
-var SERVER_URL = 'http://www.soul.com.br/horarios/json/?callback=?';
+var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 
 function checkUpdatesFromSoul() {
-  $.getJSON(SERVER_URL, {
+  $.getJSON(SERVER_ENDPOINT, {
     noticias_hash: localStorage.getItem('noticias_hash'), 
     horarios_hash: localStorage.getItem('horarios_hash')
-  }, function(response){
+  }, function(response) {
+    
+    if (response.horarios_hash) {
+    
+      // TODO sincronizar tabelaHorarios
+      localStorage.setItem('horarios_hash', response.horarios_hash);
+    }
+    
     if (response.noticias_hash) {
-      //localStorage.setItem('noticias_hash', response.noticias_hash);
-      var noticias = response.noticias;
-      var length = noticias.length;
+      localStorage.setItem('noticias_hash', response.noticias_hash);
       
-      for (var i = 0; i < length; i++) {
-        console.log(noticias[i]);
-      }
+      var noticias = response.noticias;
+      
+      var noticiasPorId = {};
+      
+      $(noticias).each(function(i, noticia) {
+        noticiasPorId[noticia.id] = noticia;
+      });
+      
+      $(tabelaNoticias).each(function(i, noticia) {
+        if (noticia.lida && noticiasPorId[noticia.id]) {
+          noticiasPorId[noticia.id].lida = true;
+        }
+      });
+      
+      tabelaNoticias = noticias;      
+      syncronizaNoticias();
+      carregaAreaNoticias();
     }
   });
 }
@@ -126,7 +145,7 @@ $(window).resize(function(){
 
 function carregaAreaNoticias() {
 
-  var novasNoticias = $(tabelaNoticias).filter(function(){ return this.lida == false });
+  var novasNoticias = $(tabelaNoticias).filter(function(){ return !this.lida });
   if (novasNoticias.length > 0) {
     $('#span_noticias_count').text(novasNoticias.length + ' ' + (novasNoticias.length == 1 ? 'nova' : 'novas'));
     $('#span_noticias_novas').show();
@@ -145,7 +164,7 @@ function carregaAreaNoticias() {
     noticiaArea.find('#noticia_titulo').text(noticia.titulo);
     noticiaArea.find('#noticia_texto').html(noticia.texto.split("\n").join("<br />"));
     
-    if (noticia.lida == false) {
+    if (!noticia.lida) {
       noticiaArea
         .addClass('texto_negrito')
         .find('h4')
@@ -154,8 +173,10 @@ function carregaAreaNoticias() {
     }
     
     noticiaArea.click(function() {
-      noticia.lida = true;
-      syncronizaNoticias();
+      if (!noticia.lida) {
+	    noticia.lida = true;
+	    syncronizaNoticias();
+	  }
       
       $(this)
         .find('.glyphicon')
@@ -246,6 +267,7 @@ $(function () {
   });
   
   carregaAreaNoticias();
+  checkUpdatesFromSoul();
   
   $('#checkLembrarFiltros').click(function() {
     $('.clsLabelLembrar').toggle();
