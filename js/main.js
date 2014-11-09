@@ -6,7 +6,7 @@ function checkUpdatesFromSoul() {
     noticias_hash: localStorage.getItem('noticias_hash'), 
     horarios_hash: localStorage.getItem('horarios_hash')
   }, function(response) {
-    
+  
     if (response.horarios_hash) {
     
       // TODO sincronizar tabelaHorarios
@@ -267,7 +267,6 @@ $(function () {
   });
   
   carregaAreaNoticias();
-  checkUpdatesFromSoul();
   
   $('#checkLembrarFiltros').click(function() {
     $('.clsLabelLembrar').toggle();
