@@ -1,12 +1,31 @@
 //autor: jeanroldao@gmail.com
 var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
+var SERVER_TIMEOUT = 3000;
+var ULTIMA_ATUALIZACAO = '16/11/2014 12:00'
+
+if (!console || !console.log) {
+  console = {log: function(){}};
+}
+
+$.ajaxSetup({timeout: SERVER_TIMEOUT});
 
 function checkUpdatesFromSoul() {
+  
+  if (!navigator.onLine) {
+    console.log('offline');
+    return;
+  }
+  
+  $('#span_conferindo').removeClass('hidden');
+  $('#span_ultima_atualizacao').addClass('hidden');
+  
   $.getJSON(SERVER_ENDPOINT, {
     noticias_hash: localStorage.getItem('noticias_hash'), 
     horarios_hash: localStorage.getItem('horarios_hash')
   }, function(response) {
-  
+    console.log('update ok');
+    localStorage.setItem('ultimaAtualizacao', formatDateTime(new Date()));
+ 
     if (response.horarios_hash) {
     
       // TODO sincronizar tabelaHorarios
@@ -30,11 +49,27 @@ function checkUpdatesFromSoul() {
         }
       });
       
-      tabelaNoticias = noticias;      
+      tabelaNoticias = noticias;
+      
       syncronizaNoticias();
       carregaAreaNoticias();
     }
+  }).fail(function() {
+    console.log('update failed');
+  }).complete(function() {
+    $('#span_conferindo').addClass('hidden');
+    $('#span_ultima_atualizacao').removeClass('hidden');
+    atualizaTextoDeUltimaAtualizacao();
   });
+}
+
+function atualizaTextoDeUltimaAtualizacao() {
+  var ultimaAtualizacao = localStorage.getItem('ultimaAtualizacao');
+  if (!ultimaAtualizacao) {
+    ultimaAtualizacao = ULTIMA_ATUALIZACAO;
+  }
+  $('#data_ultima_atualizacao').text(ultimaAtualizacao);
+  $('#span_ultima_atualizacao').removeClass('hidden');
 }
 
 function syncronizaNoticias() {
@@ -128,7 +163,25 @@ function formatTime(time) {
 }
 
 function formatData(data) {
-  return data.split('-').reverse().join('/');
+  if (data.getDate) {
+    var dia = data.getDate();
+    if (dia < 10) {
+      dia = "0" + (+dia);
+    }
+    var mes = data.getMonth() + 1;
+    if (mes < 10) {
+      mes = "0" + (+mes);
+    }
+    
+    var ano = data.getFullYear();
+   return dia + '/' + mes + '/' + ano;
+  } else {
+    return data.split('-').reverse().join('/');
+  }
+}
+
+function formatDateTime(dateTime) {
+  return formatData(dateTime) + ' ' + formatTime(dateTime);
 }
 
 function getAndroidVersion() {
@@ -174,9 +227,9 @@ function carregaAreaNoticias() {
     
     noticiaArea.click(function() {
       if (!noticia.lida) {
-	    noticia.lida = true;
-	    syncronizaNoticias();
-	  }
+        noticia.lida = true;
+        syncronizaNoticias();
+      }
       
       $(this)
         .find('.glyphicon')
@@ -227,10 +280,30 @@ $(function () {
       v.attr('type', 'number');
       v.attr('maxlength', '2');
       v.width(v.width() / 3);
+      v.focus(function(){ 
+        this.select();
+      });
       
-      v.parent().append($('<div>').append(v.css('display', 'inline')).append(':'));
+      v.parent().append($('<span>').append(v.css({display: 'inline'})));
+      v.parent().css({display: 'block'});
       var v1 = $(v[0]).attr('placeholder', 'Hora');
       var v2 = v.clone().attr('placeholder', 'Minuto').appendTo(v.parent());
+      
+      $([v1, v2]).each(function(i, campo) {
+        var divCampo = $('<div></div>').css({textAlign: 'center'});
+        
+        campo.after(divCampo);
+        campo.appendTo(divCampo);
+        
+        var btnDivUp = $('<span><button><span class="glyphicon glyphicon-plus"></span></button><span>');
+        btnDivUp.css({}).width(campo.width());
+        
+        var btnDivDown = $('<span><button><span class="glyphicon glyphicon-minus"></span></button><span>');
+        btnDivDown.css({}).width(campo.width());
+        
+        campo.before(btnDivDown);
+        campo.after(btnDivUp);
+      });
       
       v.val=function(value) {
         if (arguments.length == 0) {
@@ -267,6 +340,11 @@ $(function () {
   });
   
   carregaAreaNoticias();
+  
+  // conferir novas noticias depois do SERVER_TIMEOUT, 
+  // para não ficar muito tempo na tela preta 
+  // esperando carregar as noticias em internet lenta
+  setTimeout(checkUpdatesFromSoul, SERVER_TIMEOUT);
   
   $('#checkLembrarFiltros').click(function() {
     $('.clsLabelLembrar').toggle();
@@ -440,6 +518,11 @@ $(function () {
     document.addEventListener("volumeupbutton", acao, false);
   }, false);
   */
+  atualizaTextoDeUltimaAtualizacao();
+  if (navigator && navigator.splashscreen && navigator.splashscreen.hide) {
+    console.log('navigator.splashscreen.hide()');
+    navigator.splashscreen.hide();
+  }
 });
 
 function montaGrid(lista) {
