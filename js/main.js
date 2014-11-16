@@ -274,7 +274,7 @@ $(function () {
   // Teste se timepicker é suportado, 
   // se nao for usa campos alterativos para selecionar horas e minutos
   txtHoraInicial.val(txtHoraInicial.attr('placeholder'));
-  if (txtHoraInicial.val()) {
+  if (1 || txtHoraInicial.val()) {
     $([txtHoraInicial, txtHoraFinal]).each(function(i, v) {
       v.val('');
       v.attr('type', 'number');
@@ -289,6 +289,7 @@ $(function () {
       var v1 = $(v[0]).attr('placeholder', 'Hora');
       var v2 = v.clone().attr('placeholder', 'Minuto').appendTo(v.parent());
       
+      var MAX_VALUES = [23, 59];
       $([v1, v2]).each(function(i, campo) {
         var divCampo = $('<div></div>').css({textAlign: 'center'});
         
@@ -297,9 +298,23 @@ $(function () {
         
         var btnDivUp = $('<span><button><span class="glyphicon glyphicon-plus"></span></button><span>');
         btnDivUp.css({}).width(campo.width());
+        btnDivUp.click(function(){
+          var valor = +campo.val() + 1;
+          if (valor > MAX_VALUES[i]) {
+            valor = 0;
+          }
+          campo.val(valor);
+        });
         
         var btnDivDown = $('<span><button><span class="glyphicon glyphicon-minus"></span></button><span>');
         btnDivDown.css({}).width(campo.width());
+        btnDivDown.click(function(){
+          var valor = +campo.val() - 1;
+          if (valor < 0) {
+            valor = MAX_VALUES[i];
+          }
+          campo.val(valor);
+        });
         
         campo.before(btnDivDown);
         campo.after(btnDivUp);
