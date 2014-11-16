@@ -274,7 +274,7 @@ $(function () {
   // Teste se timepicker é suportado, 
   // se nao for usa campos alterativos para selecionar horas e minutos
   txtHoraInicial.val(txtHoraInicial.attr('placeholder'));
-  if (1 || txtHoraInicial.val()) {
+  if (txtHoraInicial.val()) {
     $([txtHoraInicial, txtHoraFinal]).each(function(i, v) {
       v.val('');
       v.attr('type', 'number');
