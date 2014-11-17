@@ -1,6 +1,7 @@
 //autor: jeanroldao@gmail.com
 var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
-var SERVER_TIMEOUT = 3000;
+var SERVER_TIMEOUT = 10000;
+var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '16/11/2014 12:00'
 
 if (!console || !console.log) {
@@ -303,6 +304,9 @@ $(function () {
           if (valor > MAX_VALUES[i]) {
             valor = 0;
           }
+          if (valor < 10) {
+            valor = '0' + valor;
+          }
           campo.val(valor);
         });
         
@@ -312,6 +316,9 @@ $(function () {
           var valor = +campo.val() - 1;
           if (valor < 0) {
             valor = MAX_VALUES[i];
+          }
+          if (valor < 10) {
+            valor = '0' + valor;
           }
           campo.val(valor);
         });
@@ -356,10 +363,10 @@ $(function () {
   
   carregaAreaNoticias();
   
-  // conferir novas noticias depois do SERVER_TIMEOUT, 
+  // conferir novas noticias depois do UPDATE_DALAY, 
   // para não ficar muito tempo na tela preta 
   // esperando carregar as noticias em internet lenta
-  setTimeout(checkUpdatesFromSoul, SERVER_TIMEOUT);
+  setTimeout(checkUpdatesFromSoul, UPDATE_DALAY);
   
   $('#checkLembrarFiltros').click(function() {
     $('.clsLabelLembrar').toggle();
