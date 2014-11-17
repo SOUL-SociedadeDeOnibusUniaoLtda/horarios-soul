@@ -1,6 +1,6 @@
 //autor: jeanroldao@gmail.com
 var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
-var SERVER_TIMEOUT = 10000;
+var SERVER_TIMEOUT = 20000;
 var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '16/11/2014 12:00'
 
