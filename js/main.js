@@ -381,6 +381,24 @@ $(function () {
   
   txtHoraFinal.val(formatTime(horafim));
   
+  $('#txtHoraInicial2').val(formatTime(horaini));
+  $('#txtHoraFinal2').val(formatTime(horafim));
+  
+  $('input[type=timepicker]').click(function() {
+    var options = {
+      date: this.value,
+      mode: 'time'
+    };
+
+    if (typeof datePicker != 'undefined') {
+      datePicker.show(options, function(date){
+        alert("date result " + date);  
+      });
+    } else {
+      alert('datePicker not found');
+    }
+  });
+  
   /*
   $(getSentidos()).each(function(i, sentido){
 	
