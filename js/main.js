@@ -386,14 +386,18 @@ $(function () {
   
   $('input[type=timepicker]').click(function() {
     var options = {
-      date: this.value,
+      date: new Date(),
       mode: 'time'
     };
 
     if (typeof datePicker != 'undefined') {
-      datePicker.show(options, function(date){
-        alert("date result " + date);  
-      });
+      try {
+        datePicker.show(options, function(date){
+          alert("date result " + date);  
+        });
+      } catch (e) {
+        alert('datePicker error: ' + e);
+      }
     } else {
       alert('datePicker not found');
     }
