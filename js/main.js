@@ -195,7 +195,7 @@ function parseTime(timeString) {
     data.setMinutes(horaMinuto[1]);
   }
   
-  return date;
+  return data;
 }
 
 function getAndroidVersion() {
