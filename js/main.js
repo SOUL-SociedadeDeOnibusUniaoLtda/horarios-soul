@@ -185,6 +185,19 @@ function formatDateTime(dateTime) {
   return formatData(dateTime) + ' ' + formatTime(dateTime);
 }
 
+function parseTime(timeString) {
+  var data = new Date();
+  var horaMinuto = timeString.split(':');
+  
+  data.setHours(horaMinuto[0]);
+  
+  if (horaMinuto.length > 1) {
+    data.setMinutes(horaMinuto[1]);
+  }
+  
+  return date;
+}
+
 function getAndroidVersion() {
   var ua = navigator.userAgent; 
   var match = ua.match(/Android\s([0-9\.]*)/);
@@ -386,8 +399,8 @@ $(function () {
   
   $('input[type=timepicker]').click(function() {
     var options = {
-      date: new Date(),
-      mode: 'time'
+      date: parseTime(this.value),
+      mode: 'datetime'
     };
 
     if (typeof datePicker != 'undefined') {
