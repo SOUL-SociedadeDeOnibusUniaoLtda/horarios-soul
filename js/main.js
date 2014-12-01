@@ -400,7 +400,8 @@ $(function () {
   $('input[type=timepicker]').click(function() {
     var options = {
       date: parseTime(this.value),
-      mode: 'time'
+      mode: 'time',
+      data: true
     };
 
     if (typeof datePicker != 'undefined') {
