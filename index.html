@@ -97,7 +97,7 @@
               <option value="DOMINGO">Domingo e feriados</option>
             </select>
           </div>
-          <div class="form-group row">
+          <div class="form-group row" id="filtroHoraNormal">
             <div class="col-xs-6">
               <label for="txtHoraInicial">Hora inicial</label>
               <label class="clsLabelLembrar">[ <input type="checkbox" />lembrar ]</label>
@@ -109,16 +109,26 @@
               <input type="time" class="form-control" id="txtHoraFinal" placeholder="Hora final" />
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row hidden" id="filtroHoraPlugin">
             <div class="col-xs-6">
-              <label for="txtHoraInicial2">Hora inicial</label>
+              <label for="txtHoraInicialPlugin">Hora inicial</label>
               <label class="clsLabelLembrar">[ <input type="checkbox" />lembrar ]</label>
-              <input type="timepicker" readonly="true" class="form-control" id="txtHoraInicial2" placeholder="Hora inicial" />
+              <input id="txtHoraInicialPlugin" 
+                type="timepicker" 
+                readonly="true" 
+                class="form-control" 
+                style="background-color: white"
+                placeholder="Hora inicial" />
             </div>
             <div class="col-xs-6">
-              <label for="txtHoraFinal2">Hora final</label>
+              <label for="txtHoraFinalPlugin">Hora final</label>
               <label class="clsLabelLembrar">[ <input type="checkbox" />lembrar ]</label>
-              <input type="timepicker" readonly="true" class="form-control" id="txtHoraFinal2" placeholder="Hora final" />
+              <input id="txtHoraFinalPlugin" 
+                type="timepicker" 
+                readonly="true" 
+                class="form-control" 
+                style="background-color: white"
+                placeholder="Hora final" />
             </div>
           </div>
           <div class="form-group" style="display: none;">

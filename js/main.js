@@ -285,76 +285,100 @@ $(function () {
   var btnPesquisar = $('#btnPesquisar');
   var btnVoltar = $('#btnVoltar');
   
-  // Teste se timepicker é suportado, 
-  // se nao for usa campos alterativos para selecionar horas e minutos
-  txtHoraInicial.val(txtHoraInicial.attr('placeholder'));
-  if (txtHoraInicial.val()) {
-    $([txtHoraInicial, txtHoraFinal]).each(function(i, v) {
-      v.val('');
-      v.attr('type', 'number');
-      v.attr('maxlength', '2');
-      v.width(v.width() / 3);
-      v.focus(function(){ 
-        this.select();
-      });
-      
-      v.parent().append($('<span>').append(v.css({display: 'inline'})));
-      v.parent().css({display: 'block'});
-      var v1 = $(v[0]).attr('placeholder', 'Hora');
-      var v2 = v.clone().attr('placeholder', 'Minuto').appendTo(v.parent());
-      
-      var MAX_VALUES = [23, 59];
-      $([v1, v2]).each(function(i, campo) {
-        var divCampo = $('<div></div>').css({textAlign: 'center'});
-        
-        campo.after(divCampo);
-        campo.appendTo(divCampo);
-        
-        var btnDivUp = $('<span><button><span class="glyphicon glyphicon-plus"></span></button><span>');
-        btnDivUp.css({}).width(campo.width());
-        btnDivUp.click(function(){
-          var valor = +campo.val() + 1;
-          if (valor > MAX_VALUES[i]) {
-            valor = 0;
-          }
-          if (valor < 10) {
-            valor = '0' + valor;
-          }
-          campo.val(valor);
-        });
-        
-        var btnDivDown = $('<span><button><span class="glyphicon glyphicon-minus"></span></button><span>');
-        btnDivDown.css({}).width(campo.width());
-        btnDivDown.click(function(){
-          var valor = +campo.val() - 1;
-          if (valor < 0) {
-            valor = MAX_VALUES[i];
-          }
-          if (valor < 10) {
-            valor = '0' + valor;
-          }
-          campo.val(valor);
-        });
-        
-        campo.before(btnDivDown);
-        campo.after(btnDivUp);
-      });
-      
-      v.val=function(value) {
-        if (arguments.length == 0) {
-          return formatTime(v1.val() + ':' + v2.val());
-        } else {
-          var horaMin = ['', ''];
-          if (value) {
-            horaMin = formatTime(value).split(':');
-          }
-          v1.val(horaMin[0]);
-          v2.val(horaMin[1]);
-          return this;
-        }
-      };
-    });
+  if (typeof datePicker != 'undefined') {
     
+    $('#filtroHoraNormal').addClass('hidden');
+    $('#filtroHoraPlugin').removeClass('hidden');
+    
+    txtHoraInicial = $('#txtHoraInicialPlugin');
+    txtHoraFinal = $('#txtHoraFinalPlugin');
+
+    
+    $('input[type=timepicker]').click(function() {
+      var options = {
+        date: parseTime(this.value),
+        mode: 'time',
+        data: true
+      };
+
+      datePicker.show(options, function(date){
+        alert("date result " + date);  
+      });
+    });
+      
+  } else {
+  
+    // Teste se timepicker é suportado, 
+    // se nao for usa campos alterativos para selecionar horas e minutos
+    txtHoraInicial.val(txtHoraInicial.attr('placeholder'));
+    if (txtHoraInicial.val()) {
+      $([txtHoraInicial, txtHoraFinal]).each(function(i, v) {
+        v.val('');
+        v.attr('type', 'number');
+        v.attr('maxlength', '2');
+        v.width(v.width() / 3);
+        v.focus(function(){ 
+          this.select();
+        });
+        
+        v.parent().append($('<span>').append(v.css({display: 'inline'})));
+        v.parent().css({display: 'block'});
+        var v1 = $(v[0]).attr('placeholder', 'Hora');
+        var v2 = v.clone().attr('placeholder', 'Minuto').appendTo(v.parent());
+        
+        var MAX_VALUES = [23, 59];
+        $([v1, v2]).each(function(i, campo) {
+          var divCampo = $('<div></div>').css({textAlign: 'center'});
+          
+          campo.after(divCampo);
+          campo.appendTo(divCampo);
+          
+          var btnDivUp = $('<span><button><span class="glyphicon glyphicon-plus"></span></button><span>');
+          btnDivUp.css({}).width(campo.width());
+          btnDivUp.click(function(){
+            var valor = +campo.val() + 1;
+            if (valor > MAX_VALUES[i]) {
+              valor = 0;
+            }
+            if (valor < 10) {
+              valor = '0' + valor;
+            }
+            campo.val(valor);
+          });
+          
+          var btnDivDown = $('<span><button><span class="glyphicon glyphicon-minus"></span></button><span>');
+          btnDivDown.css({}).width(campo.width());
+          btnDivDown.click(function(){
+            var valor = +campo.val() - 1;
+            if (valor < 0) {
+              valor = MAX_VALUES[i];
+            }
+            if (valor < 10) {
+              valor = '0' + valor;
+            }
+            campo.val(valor);
+          });
+          
+          campo.before(btnDivDown);
+          campo.after(btnDivUp);
+        });
+        
+        v.val=function(value) {
+          if (arguments.length == 0) {
+            return formatTime(v1.val() + ':' + v2.val());
+          } else {
+            var horaMin = ['', ''];
+            if (value) {
+              horaMin = formatTime(value).split(':');
+            }
+            v1.val(horaMin[0]);
+            v2.val(horaMin[1]);
+            return this;
+          }
+        };
+      });
+      
+    }
   }
   
   $('#topo_fixo').click(function(){
@@ -393,30 +417,7 @@ $(function () {
   horafim.setHours(horafim.getHours() + 1);
   
   txtHoraFinal.val(formatTime(horafim));
-  
-  $('#txtHoraInicial2').val(formatTime(horaini));
-  $('#txtHoraFinal2').val(formatTime(horafim));
-  
-  $('input[type=timepicker]').click(function() {
-    var options = {
-      date: parseTime(this.value),
-      mode: 'time',
-      data: true
-    };
 
-    if (typeof datePicker != 'undefined') {
-      try {
-        datePicker.show(options, function(date){
-          alert("date result " + date);  
-        });
-      } catch (e) {
-        alert('datePicker error: ' + e);
-      }
-    } else {
-      alert('datePicker not found');
-    }
-  });
-  
   /*
   $(getSentidos()).each(function(i, sentido){
 	
