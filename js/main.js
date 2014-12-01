@@ -304,7 +304,7 @@ $(function () {
 
         datePicker.show(options, function(date){
           console.log("date result " + date); 
-          input.val(formatTime(date));
+          input.val(formatTime(new Date(date)));
         });
       });
         
