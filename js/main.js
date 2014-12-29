@@ -34,9 +34,11 @@ function checkUpdatesFromSoul() {
     localStorage.setItem('ultimaAtualizacao', formatDateTime(new Date()));
  
     if (response.horarios_hash) {
-    
-      // TODO sincronizar tabelaHorarios
       localStorage.setItem('horarios_hash', response.horarios_hash);
+      atualizaTabelaHorarios(response.horarios);
+      
+      //recarrega a lista de linhas 
+      $('#selectSentido').change();
     }
     
     if (response.noticias_hash) {
@@ -83,14 +85,10 @@ function syncronizaNoticias() {
   localStorage.setItem('tabelaNoticias', JSON.stringify(tabelaNoticias));
 }
 
-var linhasAgrupadas = null;
 function getLinhas() {
   //tabelaHorarios
-  if (linhasAgrupadas) {
-    return linhasAgrupadas;
-  }
   
-  linhasAgrupadas = {};
+  var linhasAgrupadas = {};
   
   for (var i = 0; i < tabelaHorarios.length; i++ ) {
     var linhaAtual = tabelaHorarios[i];
@@ -116,12 +114,7 @@ function getLinhas() {
   return linhasAgrupadas;
 }
 
-var sentidos = null;
 function getSentidos() {
-
-  if (sentidos) {
-    return sentidos;
-  }
   
   var sentidosCadastradas = {};
   for (var i = 0; i < tabelaHorarios.length; i++ ) {
@@ -131,7 +124,7 @@ function getSentidos() {
     sentidosCadastradas[tabelaHorarios[i].sentido]++;
   }
   
-  sentidos = [];
+  var sentidos = [];
   for (var sentido in sentidosCadastradas) {
     sentidos.push(sentido);
   }
@@ -157,8 +150,13 @@ function formatTime(time) {
     minutos = time.getMinutes();
   } else {
     time = time.split(':');
-    horas = time[0];
-    minutos = time.length > 0 ? time[1] : '0';
+    if (time.length > 1) {
+      horas = time[0];
+      minutos = time[1];
+    } else {
+      horas = Math.floor(time[0] / 100);
+      minutos = time[0] % 100;
+    }
   }
   if (horas < 10) {
     horas = "0" + (+horas);
