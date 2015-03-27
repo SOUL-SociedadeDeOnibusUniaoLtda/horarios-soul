@@ -309,7 +309,7 @@ $(function () {
           };
 
           datePicker.show(options, function(date){
-            console.log("date result " + date); 
+            alert("date result " + date); 
             input.val(formatTime(new Date('01/01/1001 ' + date.split(' ')[1])));
           });
         });
