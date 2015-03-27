@@ -310,11 +310,11 @@ $(function () {
 
           datePicker.show(options, function(date){
             console.log("date result " + date); 
-            date = new Date(date);
-            if (date && date.toString() == 'Invalid Date') {
-              date = new Date('01/01/2001 ' + date.split(' ')[1]);
+            dateObject = new Date(date);
+            if (dateObject && dateObject.toString() == 'Invalid Date') {
+              dateObject = new Date('01/01/2001 ' + date.split(' ')[1]);
             }
-            input.val(formatTime(date));
+            input.val(formatTime(dateObject));
           });
         });
           
