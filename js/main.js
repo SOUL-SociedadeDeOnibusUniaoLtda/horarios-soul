@@ -309,8 +309,8 @@ $(function () {
           };
 
           datePicker.show(options, function(date){
-            alert("date result " + date); 
-            input.val(formatTime(new Date(date)));
+            console.log("date result " + date); 
+            input.val(formatTime(new Date('01/01/1001 ' + date.split(' ')[1])));
           });
         });
           
