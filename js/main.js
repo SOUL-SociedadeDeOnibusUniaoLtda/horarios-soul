@@ -458,6 +458,14 @@ $(function () {
   horafim.setHours(horafim.getHours() + 1);
   
   txtHoraFinal.val(formatTime(horafim));
+  
+  var diaSemana = new Date().getDay();
+  
+  if (diaSemana == 0) {
+    selectDia.val('DOMINGO');
+  } else if (diaSemana == 6) {
+    selectDia.val('SABADO');
+  }
 
   /*
   $(getSentidos()).each(function(i, sentido){
