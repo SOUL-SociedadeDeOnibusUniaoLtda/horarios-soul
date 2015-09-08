@@ -5,35 +5,6 @@ var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/01/2015 12:00'
 var isOnline = navigator.onLine;
 
-// keen analytics
-var keenClient = {
-  client: null,
-  
-  init: function() {
-    this.client = new Keen({
-      projectId: "55ee3fb946f9a7569d83a9b8",
-      readKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5",
-      writeKey: "1bbc45a3576e75f34f9367e0367ac3b58618ec84bcf7670e8275169842e0cc3b18b0cf7ad7139247956a948f8de38dee73490096fab2f6646e37a65c1c0b9a7a6107a96513b641dbd78ad03652626640748189b120d9190329f870a073a5a81f64be90ba67c615e885b9e1792ccc4c5f"
-    });
-    
-    this.addData('app start');
-  },
-  
-  addData: function(text, data, callback) {
-    if (this.client) {
-      this.client.addEvent(text, data || {}, function(err, res) {
-        if (err) {
-          alert("Error: " + err);
-        } else {
-          alert("Event sent.");
-        }
-        
-        callback && callback();
-      });
-    }
-  }
-};
-
 if (!console || !console.log) {
   console = {log: function(){}};
 }
@@ -44,13 +15,12 @@ document.addEventListener("offline", function(){
   console.log('offline');
   isOnline = false;
   
-  keenClient.addData('offline');
 }, false);
 
 function checkUpdatesFromSoul() {
   
   if (!isOnline) {
-    console.log('offline');
+    console.log('skip update, offline');
     return;
   }
   
@@ -115,6 +85,72 @@ function atualizaTextoDeUltimaAtualizacao() {
 function syncronizaNoticias() {
   localStorage.setItem('tabelaNoticias', JSON.stringify(tabelaNoticias));
 }
+
+// keen analytics
+var keenClient = {
+  client: null,
+  
+  init: function() {
+    keenClient.client = new Keen({
+      projectId: "55ee3fb946f9a7569d83a9b8",
+      readKey: "1bbc45a3576e75f34f9367e0367ac3b58618ec84bcf7670e8275169842e0cc3b18b0cf7ad7139247956a948f8de38dee73490096fab2f6646e37a65c1c0b9a7a6107a96513b641dbd78ad03652626640748189b120d9190329f870a073a5a81f64be90ba67c615e885b9e1792ccc4c5f",
+      writeKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5"
+    });
+    
+    keenClient.addData('app start ' + (isOnline ? 'online' : 'offline'));
+    
+    if (isOnline) {
+      keenClient.flushStorage();
+    }
+  },
+  
+  addData: function(text, data) {
+    if (keenClient.client) {
+      data = data || {};
+      data.clientTime  = data.clientTime || new Date().toISOString();
+      data.device = data.device || navigator.userAgent;
+      
+      if (isOnline) {
+        keenClient.client.addEvent(text, data, function(err, res) {
+          if (err) {
+            console.log("Error: " + err);
+            
+            // add back to local storage
+            keenClient.addToStorage({text:text, data:data});
+          } else {
+            console.log("Event sent.");
+          }
+        });
+      } else {
+        console.log("Event stored.");
+        keenClient.addToStorage({text:text, data:data});
+      }
+    }
+  },
+  
+  loadKeenStorage: function() {
+    return JSON.parse(localStorage.getItem('keenStorage') || '[]');
+  },
+  
+  saveKeenStorage: function(keenStorage) {
+    localStorage.setItem('keenStorage', JSON.stringify(keenStorage));
+  },
+  
+  addToStorage: function(message) {
+    var keenStorage = keenClient.loadKeenStorage();
+    keenStorage.push(message);
+    keenClient.saveKeenStorage(keenStorage);
+  },
+  
+  flushStorage: function() {
+    var keenStorage = keenClient.loadKeenStorage();
+    keenClient.saveKeenStorage([]);
+    var len = keenStorage.length;
+    for (var i = 0; i < len; i++) {
+      keenClient.addData(keenStorage[i].text, keenStorage[i].data);
+    }
+  }
+};
 
 function getLinhas() {
   //tabelaHorarios
@@ -356,6 +392,8 @@ $(function () {
       }
     }, false);
   } else {
+    
+    keenClient.init();
   
     // Teste se timepicker é suportado, 
     // se nao for usa campos alterativos para selecionar horas e minutos
