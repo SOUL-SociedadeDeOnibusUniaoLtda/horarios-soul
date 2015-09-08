@@ -97,24 +97,39 @@ var keenClient = {
       writeKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5"
     });
     
-    keenClient.addData('app start ' + (isOnline ? 'online' : 'offline'));
-    
     if (isOnline) {
       keenClient.flushStorage();
     }
+    
+    keenClient.addData('app start');
   },
   
   addData: function(text, data) {
     if (keenClient.client) {
       data = data || {};
-      data.clientTime  = data.clientTime || new Date().toISOString();
-      data.device = data.device || navigator.userAgent;
+      
+      data.online = 'online' in data ? data.online : isOnline;
+      
+      data.ua_string = "${keen.user_agent}";
+      data.cordova = !!window.cordova;
+      
+      data.keen = data.keen || {};
+      data.keen.timestamp = data.keen.timestamp || new Date().toISOString();
+      data.keen.addons = [
+        {
+          name: "keen:ua_parser",
+          input: {
+            ua_string: "ua_string"
+          },
+          output: "parsed_user_agent"
+        }
+      ];
       
       if (isOnline) {
+        
         keenClient.client.addEvent(text, data, function(err, res) {
           if (err) {
             console.log("Error: " + err);
-            
             // add back to local storage
             keenClient.addToStorage({text:text, data:data});
           } else {
