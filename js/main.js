@@ -5,6 +5,35 @@ var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/01/2015 12:00'
 var isOnline = navigator.onLine;
 
+// keen analytics
+var keenClient = {
+  client: null,
+  
+  init: function() {
+    this.client = new Keen({
+      projectId: "55ee3fb946f9a7569d83a9b8",
+      readKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5",
+      writeKey: "1bbc45a3576e75f34f9367e0367ac3b58618ec84bcf7670e8275169842e0cc3b18b0cf7ad7139247956a948f8de38dee73490096fab2f6646e37a65c1c0b9a7a6107a96513b641dbd78ad03652626640748189b120d9190329f870a073a5a81f64be90ba67c615e885b9e1792ccc4c5f"
+    });
+    
+    this.addData('app start');
+  },
+  
+  addData: function(text, data, callback) {
+    if (this.client) {
+      this.client.addEvent(text, data || {}, function(err, res) {
+        if (err) {
+          alert("Error: " + err);
+        } else {
+          alert("Event sent.");
+        }
+        
+        callback && callback();
+      });
+    }
+  }
+};
+
 if (!console || !console.log) {
   console = {log: function(){}};
 }
@@ -14,6 +43,8 @@ $.ajaxSetup({timeout: SERVER_TIMEOUT});
 document.addEventListener("offline", function(){
   console.log('offline');
   isOnline = false;
+  
+  keenClient.addData('offline');
 }, false);
 
 function checkUpdatesFromSoul() {
@@ -278,10 +309,6 @@ function capitalize(str) {
   }).toArray().join(' ');
 }
 
-function onBackKey() {
-  
-}
-
 $(function () {
 
   var txtPesquisar = $('#txtPesquisar');
@@ -296,6 +323,10 @@ $(function () {
   
   if (window.cordova) {
     document.addEventListener("deviceready", function() {
+      
+      // init keen only for cordova
+      keenClient.init();
+      
       if (typeof datePicker != 'undefined') {
         
         $('#filtroHoraNormal').addClass('hidden');
@@ -425,13 +456,17 @@ $(function () {
     if (window.cordova) {
       document.addEventListener("backbutton", noticiasVoltar, false);
     } else if (history.pushState) {
-      history.pushState({page:'noticias'}, 'noticias');
+      if (document.origin == 'null') {
+        window.location = '#noticias';
+      } else {
+        history.pushState({page:'noticias'}, 'noticias', '/noticias');
+      }
       window.onpopstate = noticiasVoltar;
     }
   });
   
-  if (!window.cordova && history.pushState) {
-    history.replaceState({page:'home'}, 'home');
+  if (!window.cordova && history.pushState && document.origin != 'null') {
+    history.replaceState({page:'home'}, 'home', '/home');
     $('#btnVoltarNoticias').click(function(){
       history.back();
     });
