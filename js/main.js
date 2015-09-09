@@ -102,7 +102,6 @@ var keenClient = {
   init: function() {
     keenClient.client = new Keen({
       projectId: "55ee3fb946f9a7569d83a9b8",
-      readKey: "1bbc45a3576e75f34f9367e0367ac3b58618ec84bcf7670e8275169842e0cc3b18b0cf7ad7139247956a948f8de38dee73490096fab2f6646e37a65c1c0b9a7a6107a96513b641dbd78ad03652626640748189b120d9190329f870a073a5a81f64be90ba67c615e885b9e1792ccc4c5f",
       writeKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5"
     });
     
@@ -111,7 +110,7 @@ var keenClient = {
     }
   },
   
-  addData: function(text, data) {
+  addData: function(event, data) {
     if (!keenClient.client) {
       keenClient.init();
     }
@@ -137,19 +136,43 @@ var keenClient = {
     ];
     
     if (isOnline) {
+      if (event == 'pesquisa') {
+        var linhas = data.pesquisa.linhas.split(',');
+        var linhasData = [];
+        for (var i = 0; i < linhas.length; i++) {
+          linhasData.push({
+            linha: linhas[i],
+            keen:{
+              timestamp: data.keen.timestamp
+            }
+          });
+        }
+        keenClient.client.addEvents({'pesquisa por linha': linhasData});
+        /*
+        var linhas = data.pesquisa.linhas.split(',');
+        delete data.pesquisa.linhas;
+        
+        for (var i = 0; i < linhas.length; i++) {
+          data.pesquisa.linha = linhas[i];
+          keenClient.client.addEvent('pesquisa por linha', data);
+        }
+        delete data.pesquisa.linha;
+        data.pesquisa.linhas = linhas.join(',');
+        */
+      }
       
-      keenClient.client.addEvent(text, data, function(err, res) {
+      keenClient.client.addEvent(event, data, function(err, res) {
         if (err) {
           console.log("Error: " + err);
           // add back to local storage
-          keenClient.addToStorage({text:text, data:data});
+          keenClient.addToStorage({event:event, data:data});
         } else {
-          console.log('(' + text + ') sent.');
+          console.log('(' + event + ') sent.');
         }
       });
     } else {
-      console.log('(' + text + ') stored.');
-      keenClient.addToStorage({text:text, data:data});
+      console.log('(' + event + ') stored.');
+      keenClient.addToStorage({event:event, data:data});
     }
   },
   
@@ -172,7 +195,7 @@ var keenClient = {
     keenClient.saveKeenStorage([]);
     var len = keenStorage.length;
     for (var i = 0; i < len; i++) {
-      keenClient.addData(keenStorage[i].text, keenStorage[i].data);
+      keenClient.addData(keenStorage[i].event, keenStorage[i].data);
     }
   }
 };
@@ -653,11 +676,15 @@ $(function () {
         $('#conteudo_tabela').show();
         $('body,html').animate({scrollTop:btnPesquisar.position().top - 75}, 'slow');
         
+        if (selecao.length == 0) {
+          selecao = $.map($('#selectLinhas')[0].options, function(o){return o.value;});
+        }
         var pesquisa = {
-          linhas: selecao,
+          linhas: selecao.join(','),
           dia: selectDia.val(),
           sentido: sentido,
-          periodo: [horaInicial, horaFinal],
+          horaInicial: horaInicial,
+          horaFinal: horaFinal,
           resultadoLength: resultado.length
         };
         keenClient.addData('pesquisa', {pesquisa:pesquisa});
