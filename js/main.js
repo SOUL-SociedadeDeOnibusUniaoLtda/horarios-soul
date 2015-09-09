@@ -2,7 +2,7 @@
 var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 var SERVER_TIMEOUT = 20000;
 var UPDATE_DALAY = 2000;
-var ULTIMA_ATUALIZACAO = '01/01/2015 12:00'
+var ULTIMA_ATUALIZACAO = '01/06/2015 12:00'
 var isOnline = navigator.onLine;
 
 if (!console || !console.log) {
@@ -18,9 +18,10 @@ document.addEventListener("offline", function(){
 }, false);
 
 function checkUpdatesFromSoul() {
+  keenClient.addData('app start');
   
   if (!isOnline) {
-    console.log('skip update, offline');
+    console.log('offline, skip update');
     return;
   }
   
@@ -82,6 +83,14 @@ function atualizaTextoDeUltimaAtualizacao() {
   $('#span_ultima_atualizacao').removeClass('hidden');
 }
 
+function getUltimaAtualizacaoISOString() {
+  var ultimaAtualizacao = localStorage.getItem('ultimaAtualizacao') || ULTIMA_ATUALIZACAO;
+  var data = ultimaAtualizacao.split(' ');
+  data[0] = data[0].split('/').reverse().join('/');
+  var validDate = data.join(' ');
+  return new Date(validDate).toISOString();
+}
+
 function syncronizaNoticias() {
   localStorage.setItem('tabelaNoticias', JSON.stringify(tabelaNoticias));
 }
@@ -100,46 +109,47 @@ var keenClient = {
     if (isOnline) {
       keenClient.flushStorage();
     }
-    
-    keenClient.addData('app start');
   },
   
   addData: function(text, data) {
-    if (keenClient.client) {
-      data = data || {};
-      
-      data.online = 'online' in data ? data.online : isOnline;
-      
-      data.ua_string = "${keen.user_agent}";
-      data.cordova = !!window.cordova;
-      
-      data.keen = data.keen || {};
-      data.keen.timestamp = data.keen.timestamp || new Date().toISOString();
-      data.keen.addons = [
-        {
-          name: "keen:ua_parser",
-          input: {
-            ua_string: "ua_string"
-          },
-          output: "parsed_user_agent"
-        }
-      ];
-      
-      if (isOnline) {
-        
-        keenClient.client.addEvent(text, data, function(err, res) {
-          if (err) {
-            console.log("Error: " + err);
-            // add back to local storage
-            keenClient.addToStorage({text:text, data:data});
-          } else {
-            console.log("Event sent.");
-          }
-        });
-      } else {
-        console.log("Event stored.");
-        keenClient.addToStorage({text:text, data:data});
+    if (!keenClient.client) {
+      keenClient.init();
+    }
+    data = data || {};
+    
+    data.online = 'online' in data ? data.online : isOnline;
+    
+    data.ua_string = "${keen.user_agent}";
+    data.cordova = !!window.cordova;
+    
+    data.ultimaAtualizacao = getUltimaAtualizacaoISOString();
+    
+    data.keen = data.keen || {};
+    data.keen.timestamp = data.keen.timestamp || new Date().toISOString();
+    data.keen.addons = [
+      {
+        name: "keen:ua_parser",
+        input: {
+          ua_string: "ua_string"
+        },
+        output: "parsed_user_agent"
       }
+    ];
+    
+    if (isOnline) {
+      
+      keenClient.client.addEvent(text, data, function(err, res) {
+        if (err) {
+          console.log("Error: " + err);
+          // add back to local storage
+          keenClient.addToStorage({text:text, data:data});
+        } else {
+          console.log('(' + text + ') sent.');
+        }
+      });
+    } else {
+      console.log('(' + text + ') stored.');
+      keenClient.addToStorage({text:text, data:data});
     }
   },
   
@@ -375,9 +385,6 @@ $(function () {
   if (window.cordova) {
     document.addEventListener("deviceready", function() {
       
-      // init keen only for cordova
-      keenClient.init();
-      
       if (typeof datePicker != 'undefined') {
         
         $('#filtroHoraNormal').addClass('hidden');
@@ -407,8 +414,6 @@ $(function () {
       }
     }, false);
   } else {
-    
-    keenClient.init();
   
     // Teste se timepicker é suportado, 
     // se nao for usa campos alterativos para selecionar horas e minutos
@@ -648,72 +653,18 @@ $(function () {
         $('#conteudo_tabela').show();
         $('body,html').animate({scrollTop:btnPesquisar.position().top - 75}, 'slow');
         
-        //$('#conteudo_form,#conteudo_tabela').slideToggle();
-        //$('#conteudo_form').css('visibility', 'hidden');
-        /*
-        $('#conteudo_form').fadeOut('slow', function() {
-
-          $('#conteudo_tabela').fadeIn();
-          document.body.scrollTop = 0
-          if (history.pushState) {
-            history.pushState({page:'search'});
-            console.log('history.pushState');
-          }
-        });
-        */
+        var pesquisa = {
+          linhas: selecao,
+          dia: selectDia.val(),
+          sentido: sentido,
+          periodo: [horaInicial, horaFinal],
+          resultadoLength: resultado.length
+        };
+        keenClient.addData('pesquisa', {pesquisa:pesquisa});
       }, 300);
     });
   });
   
-  /*
-  var acaoVoltar = function(){
-      //setTimeout(function(){
-      document.body.scrollTop = 0
-      $('#conteudo_tabela').fadeOut('slow', function(){
-        $('#conteudo_form').fadeIn();
-      });
-      //$('#conteudo_form').css('visibility', 'visible');
-      //}, 1);
-  };
-  
-  if (history.pushState) {
-    history.replaceState({page:'home'});
-    window.onpopstate = function(event) {
-      //alert('window.onpopstate');
-      
-      // /*
-      document.addEventListener('scroll', function noScrollOnce(event) {
-        alert('noScrollOnce');
-        event.preventDefault();
-        document.removeEventListener('scroll', noScrollOnce);
-      });
-      //* /
-      
-      if (event.state) {
-        acaoVoltar();
-      }
-    };
-  }
-  
-  btnVoltar.click(function() {
-    if (history.pushState) {
-      history.back();
-    } else {
-      acaoVoltar();
-    }
-  });
-  
-  document.addEventListener("deviceready", function() {
-    //alert('deviceready');
-    var acao = function() {
-      alert('phonegap acao');
-    }
-    document.addEventListener("menubutton", acao, false);
-    document.addEventListener("backbutton", acao, false);
-    document.addEventListener("volumedownbutton", acao, false);
-    document.addEventListener("volumeupbutton", acao, false);
-  }, false);
-  */
   atualizaTextoDeUltimaAtualizacao();
   if (navigator && navigator.splashscreen && navigator.splashscreen.hide) {
     console.log('navigator.splashscreen.hide()');
