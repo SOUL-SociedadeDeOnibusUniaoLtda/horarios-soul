@@ -3,6 +3,7 @@ var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 var SERVER_TIMEOUT = 20000;
 var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/06/2015 12:00'
+var APP_VERSION = localStorage.getItem('app_version') || '0.0.0';
 var isOnline = navigator.onLine;
 
 if (!console || !console.log) {
@@ -16,6 +17,13 @@ document.addEventListener("offline", function(){
   isOnline = false;
   
 }, false);
+
+
+$.get('config.xml', function(xml) {
+  console.log('config loaded');
+  APP_VERSION = $($.parseXML(xml)).find('widget').attr('version');
+  localStorage.setItem('app_version', APP_VERSION);
+});
 
 function checkUpdatesFromSoul() {
   keenClient.addData('app start');
@@ -110,18 +118,28 @@ var keenClient = {
     }
   },
   
+  addDataAsync: function(event, data) {
+    setTimeout(function(){
+      keenClient.addData(event, data);
+    }, 300);
+  },
+  
   addData: function(event, data) {
     if (!keenClient.client) {
       keenClient.init();
     }
     data = data || {};
     
-    data.online = 'online' in data ? data.online : isOnline;
+    data.online = ('online' in data ? data.online : isOnline) ? 'online' : 'offline';
+    
+    data.noticiasNaoLidas = $(tabelaNoticias).filter(function(){ return !this.lida }).length;
     
     data.ua_string = "${keen.user_agent}";
     data.cordova = !!window.cordova;
     
     data.ultimaAtualizacao = getUltimaAtualizacaoISOString();
+    
+    data.app_version = APP_VERSION;
     
     data.keen = data.keen || {};
     data.keen.timestamp = data.keen.timestamp || new Date().toISOString();
@@ -148,17 +166,6 @@ var keenClient = {
           });
         }
         keenClient.client.addEvents({'pesquisa por linha': linhasData});
-        /*
-        var linhas = data.pesquisa.linhas.split(',');
-        delete data.pesquisa.linhas;
-        
-        for (var i = 0; i < linhas.length; i++) {
-          data.pesquisa.linha = linhas[i];
-          keenClient.client.addEvent('pesquisa por linha', data);
-        }
-        delete data.pesquisa.linha;
-        data.pesquisa.linhas = linhas.join(',');
-        */
       }
       
       keenClient.client.addEvent(event, data, function(err, res) {
@@ -359,6 +366,15 @@ function carregaAreaNoticias() {
     }
     
     noticiaArea.click(function() {
+      var noticiaLog = {
+        id: noticia.id,
+        data: noticia.data,
+        titulo: noticia.titulo,
+        nova: noticia.lida ? 'não' : 'sim'
+      };
+      console.log('noticia clicada');
+      keenClient.addDataAsync('noticia lida', {noticia: noticiaLog});
+      
       if (!noticia.lida) {
         noticia.lida = true;
         syncronizaNoticias();
