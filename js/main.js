@@ -3,7 +3,7 @@ var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 var SERVER_TIMEOUT = 20000;
 var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/06/2015 12:00'
-var APP_VERSION = localStorage.getItem('app_version') || '0.0.0';
+var APP_VERSION = '1.2.2';
 var isOnline = navigator.onLine;
 
 if (!console || !console.log) {
@@ -15,15 +15,7 @@ $.ajaxSetup({timeout: SERVER_TIMEOUT});
 document.addEventListener("offline", function(){
   console.log('offline');
   isOnline = false;
-  
 }, false);
-
-
-$.get('config.xml', function(xml) {
-  console.log('config loaded');
-  APP_VERSION = $($.parseXML(xml)).find('widget').attr('version');
-  localStorage.setItem('app_version', APP_VERSION);
-});
 
 function checkUpdatesFromSoul() {
   keenClient.addData('app start');
