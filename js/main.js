@@ -358,18 +358,18 @@ function carregaAreaNoticias() {
     }
     
     noticiaArea.click(function() {
-      var noticiaLog = {
-        id: noticia.id,
-        data: noticia.data,
-        titulo: noticia.titulo,
-        nova: noticia.lida ? 'não' : 'sim'
-      };
       console.log('noticia clicada');
-      keenClient.addDataAsync('noticia lida', {noticia: noticiaLog});
       
       if (!noticia.lida) {
         noticia.lida = true;
         syncronizaNoticias();
+        
+        var noticiaLog = {
+          id: noticia.id,
+          data: noticia.data,
+          titulo: noticia.titulo
+        };
+        keenClient.addDataAsync('noticia lida', {noticia: noticiaLog});
       }
       
       $(this)
