@@ -437,7 +437,7 @@ $(function () {
           };
 
           datePicker.show(options, function(date){
-            input.val(formatTime(dateObject));
+            input.val(formatTime(date));
           });
         });
           
