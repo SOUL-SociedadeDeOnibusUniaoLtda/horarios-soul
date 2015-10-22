@@ -3,7 +3,7 @@
 		xmlns:gap       = "http://phonegap.com/ns/1.0"
 		xmlns:android   = "http://schemas.android.com/apk/res/android"
 		id              = "br.com.soul.horarios"
-		version         = "1.2.1">
+		version         = "1.2.2">
 
 	<name>Horários Soul</name>
 
@@ -27,12 +27,12 @@
   <feature name="http://api.phonegap.com/1.0/device"/>
   
   <gap:plugin name="org.apache.cordova.network-information" />
-  <gap:plugin name="com.dileep.plugins.datepicker" />
+  <gap:plugin name="cordova-plugin-datepicker" source="npm" />
 	
 	<preference name="permissions" value="none"/>
 	<preference name="phonegap-version" value="3.7.0" />
 	<preference name="android-installLocation" value="auto" />
-	<preference name="android-targetSdkVersion" value="16" /> <!-- testado no Android 4.4 -->
+	<preference name="android-targetSdkVersion" value="26" /> <!-- testado no Android 6 -->
 	<preference name="DisallowOverscroll" value="true"/>
   <preference name="SplashScreenDelay" value="0" />
 

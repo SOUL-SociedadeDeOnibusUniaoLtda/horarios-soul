@@ -3,7 +3,7 @@ var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 var SERVER_TIMEOUT = 20000;
 var UPDATE_DALAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/06/2015 12:00'
-var APP_VERSION = '1.2.1';
+var APP_VERSION = '1.2.2';
 var isOnline = navigator.onLine;
 
 if (!console || !console.log) {
@@ -101,8 +101,8 @@ var keenClient = {
   
   init: function() {
     keenClient.client = new Keen({
-      projectId: "55ee3fb946f9a7569d83a9b8",
-      writeKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5"
+      //projectId: "55ee3fb946f9a7569d83a9b8",
+      //writeKey: "0049c120ab6e35381734e5a5228c5cb0ff0bfaf5cce04e476e08c1664a64960ebd0675fc623c736966fb83ab9642e74da1b1926893d1669ae28063ac7863a4c2dddee095973724bfdbd3e18b3d365eda87475e33718352084ee50716fc7c5e62a4d41d65bc7fa6e3bd904b2f3e64f8d5"
     });
     
     if (isOnline) {
@@ -117,6 +117,7 @@ var keenClient = {
   },
   
   addData: function(event, data) {
+    /*
     if (!keenClient.client) {
       keenClient.init();
     }
@@ -157,7 +158,7 @@ var keenClient = {
             }
           });
         }
-        keenClient.client.addEvents({'pesquisa por linha': linhasData});
+        //keenClient.client.addEvents({'pesquisa por linha': linhasData});
       }
       
       keenClient.client.addEvent(event, data, function(err, res) {
@@ -170,9 +171,10 @@ var keenClient = {
         }
       });
     } else {
-      console.log('(' + event + ') stored.');
-      keenClient.addToStorage({event:event, data:data});
+      //console.log('(' + event + ') stored.');
+      //keenClient.addToStorage({event:event, data:data});
     }
+    */
   },
   
   loadKeenStorage: function() {
@@ -429,7 +431,8 @@ $(function () {
           var input = $(this);
           var options = {
             date: parseTime(input.val()),
-            mode: 'time'
+            mode: 'time',
+            is24Hour: true
           };
 
           datePicker.show(options, function(date){
