@@ -432,15 +432,11 @@ $(function () {
           var options = {
             date: parseTime(input.val()),
             mode: 'time',
-            is24Hour: true
+            is24Hour: true,
+            androidTheme: datePicker.ANDROID_THEMES.THEME_HOLO_DARK
           };
 
           datePicker.show(options, function(date){
-            console.log("date result " + date); 
-            dateObject = new Date(date);
-            if (dateObject && dateObject.toString() == 'Invalid Date') {
-              dateObject = new Date('01/01/2001 ' + date.split(' ')[1]);
-            }
             input.val(formatTime(dateObject));
           });
         });
