@@ -1,7 +1,7 @@
 //autor: jeanroldao@gmail.com
 var SERVER_ENDPOINT = 'http://www.soul.com.br/horarios/json/?callback=?';
 var SERVER_TIMEOUT = 20000;
-var UPDATE_DALAY = 2000;
+var UPDATE_DELAY = 2000;
 var ULTIMA_ATUALIZACAO = '01/06/2015 12:00'
 var APP_VERSION = '1.2.2';
 var isOnline = navigator.onLine;
@@ -564,10 +564,10 @@ $(function () {
   
   carregaAreaNoticias();
   
-  // conferir novas noticias depois do UPDATE_DALAY, 
+  // conferir novas noticias depois do UPDATE_DELAY, 
   // para não ficar muito tempo na tela preta 
   // esperando carregar as noticias em internet lenta
-  setTimeout(checkUpdatesFromSoul, UPDATE_DALAY);
+  setTimeout(checkUpdatesFromSoul, UPDATE_DELAY);
   
   $('#checkLembrarFiltros').click(function() {
     $('.clsLabelLembrar').toggle();

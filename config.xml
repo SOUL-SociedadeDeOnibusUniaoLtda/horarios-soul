@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns     = "http://www.w3.org/ns/widgets"
-		xmlns:gap       = "http://phonegap.com/ns/1.0"
-		xmlns:android   = "http://schemas.android.com/apk/res/android"
-		id              = "br.com.soul.horarios"
-		version         = "1.2.2">
+    xmlns:gap       = "http://phonegap.com/ns/1.0"
+    xmlns:android   = "http://schemas.android.com/apk/res/android"
+    id              = "br.com.soul.horarios"
+    version         = "1.2.2">
 
-	<name>Horários Soul</name>
+  <name>Horários Soul</name>
 
-	<description>
-		Aplicativo para consulta da tabela de horários de ônibus da empresa SOUL - Sociedade de Ônibus União Ltda..
-	</description>
+  <description>
+    Aplicativo para consulta da tabela de horários de ônibus da empresa SOUL - Sociedade de Ônibus União Ltda..
+  </description>
 
-	<author href="http://www.soul.com.br/" email="horariossoul@gmail.com">
-		SOUL - Sociedade de Ônibus União Ltda.
-	</author>
+  <author href="http://www.soul.com.br/" email="horariossoul@gmail.com">
+    SOUL - Sociedade de Ônibus União Ltda.
+  </author>
 
-	<gap:platforms>
-		<gap:platform name="android" minVersion="2.1" />
-	</gap:platforms>
-	
-	<gap:config-file platform="android" parent="/manifest/application">
-		<!-- single instance para não bugar as notificações no android -->
+  <gap:platforms>
+    <gap:platform name="android" minVersion="2.1" />
+  </gap:platforms>
+  
+  <gap:config-file platform="android" parent="/manifest/application">
+    <!-- single instance para não bugar as notificações no android -->
     <activity android:launchMode="singleInstance" />
-	</gap:config-file>
+  </gap:config-file>
 
   <feature name="http://api.phonegap.com/1.0/device"/>
   
   <gap:plugin name="org.apache.cordova.network-information" />
   <gap:plugin name="cordova-plugin-datepicker" source="npm" />
-	
-	<preference name="permissions" value="none"/>
-	<preference name="phonegap-version" value="3.7.0" />
-	<preference name="android-installLocation" value="auto" />
-	<preference name="android-targetSdkVersion" value="26" /> <!-- testado no Android 6 -->
-	<preference name="DisallowOverscroll" value="true"/>
+  
+  <preference name="permissions" value="none"/>
+  <preference name="phonegap-version" value="3.7.0" />
+  <preference name="android-installLocation" value="auto" />
+  <preference name="android-targetSdkVersion" value="26" /> <!-- testado no Android 6 -->
+  <preference name="DisallowOverscroll" value="true"/>
   <preference name="SplashScreenDelay" value="0" />
 
   <icon src="img/soul_rounded_semborda_comlogo.png" />
   
-	<access origin="*" />
+  <access origin="*" />
  </widget>
